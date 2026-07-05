@@ -11,10 +11,18 @@ export function useStepScroll({ totalSteps, onComplete }: { totalSteps: number; 
   const isLocked = useRef(false);
   const isTransitioning = useRef(false);
   const scrollAccum = useRef(0);
-  const touchStartY = useRef(0);
   const touchPrevY = useRef(0);
-  const lastScrollY = useRef(0);
   const pendingRelease = useRef(false);
+
+  function lockBody() {
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+  }
+
+  function unlockBody() {
+    document.body.style.overflow = "";
+    document.documentElement.style.overflow = "";
+  }
 
   const goToStep = useCallback(
     (step: number) => {
@@ -37,6 +45,7 @@ export function useStepScroll({ totalSteps, onComplete }: { totalSteps: number; 
     } else {
       consumed.current = true;
       isLocked.current = false;
+      unlockBody();
       onComplete();
     }
   }, [currentStep, totalSteps, goToStep, onComplete]);
@@ -48,29 +57,28 @@ export function useStepScroll({ totalSteps, onComplete }: { totalSteps: number; 
     }
   }, [currentStep, goToStep]);
 
-  useEffect(() => {
+  function tryLock(down: boolean) {
+    if (consumed.current || isLocked.current || !down) return false;
     const section = sectionRef.current;
-    if (!section) return;
-
-    lastScrollY.current = window.scrollY;
-
-    const handleScroll = () => {
-      if (consumed.current || isLocked.current) return;
-      const rect = section.getBoundingClientRect();
-      const scrollingDown = window.scrollY > lastScrollY.current;
-      lastScrollY.current = window.scrollY;
-      if (scrollingDown && rect.top <= 0) {
-        isLocked.current = true;
-        window.scrollTo({ top: window.scrollY + rect.top });
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    if (!section) return false;
+    const rect = section.getBoundingClientRect();
+    if (rect.top < 0) {
+      isLocked.current = true;
+      lockBody();
+      window.scrollTo({ top: rect.top + window.scrollY });
+      return true;
+    }
+    return false;
+  }
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
+      if (!consumed.current && !isLocked.current && e.deltaY > 0) {
+        if (tryLock(true)) {
+          e.preventDefault();
+          return;
+        }
+      }
       if (consumed.current || !isLocked.current) return;
       e.preventDefault();
       scrollAccum.current += e.deltaY;
@@ -93,18 +101,24 @@ export function useStepScroll({ totalSteps, onComplete }: { totalSteps: number; 
     if (!section) return;
 
     const handleTouchStart = (e: TouchEvent) => {
-      touchStartY.current = e.touches[0].clientY;
       touchPrevY.current = e.touches[0].clientY;
       scrollAccum.current = 0;
     };
 
     const handleTouchMove = (e: TouchEvent) => {
+      const currentY = e.touches[0].clientY;
+      const dy = touchPrevY.current - currentY;
+      touchPrevY.current = currentY;
+
+      if (!consumed.current && !isLocked.current && dy > 0) {
+        if (tryLock(true)) {
+          e.preventDefault();
+          return;
+        }
+      }
       if (consumed.current || !isLocked.current) return;
       e.preventDefault();
-
-      const currentY = e.touches[0].clientY;
-      scrollAccum.current += touchPrevY.current - currentY;
-      touchPrevY.current = currentY;
+      scrollAccum.current += dy;
 
       if (scrollAccum.current >= SCROLL_THRESHOLD) {
         scrollAccum.current = 0;
@@ -128,6 +142,12 @@ export function useStepScroll({ totalSteps, onComplete }: { totalSteps: number; 
       section.removeEventListener("touchend", handleTouchEnd);
     };
   }, [actDown, actUp]);
+
+  useEffect(() => {
+    return () => {
+      unlockBody();
+    };
+  }, []);
 
   return { sectionRef, currentStep };
 }
