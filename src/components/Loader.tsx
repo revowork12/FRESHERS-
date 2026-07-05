@@ -41,9 +41,9 @@ export default function Loader({ onComplete }: { onComplete: () => void }) {
 
       if (charCountRef.current > currentLine.length) {
         clearInterval(interval);
-        if (lineIndex === 2) haptic([15, 10, 15]);
-        else if (lineIndex === 3) haptic([40, 20, 60]);
-        else haptic(8);
+        if (lineIndex === 2) haptic([30, 15, 30]);
+        else if (lineIndex === 3) haptic([50, 25, 80]);
+        else haptic(30);
 
         const pause = lineIndex === LINES.length - 1 ? FINAL_PAUSE : LINE_PAUSE;
 
@@ -51,7 +51,7 @@ export default function Loader({ onComplete }: { onComplete: () => void }) {
           const nextLine = lineIndexRef.current + 1;
           if (nextLine >= LINES.length) {
             setFinished(true);
-            haptic([80, 30, 50, 30, 80]);
+            haptic([100, 40, 70, 40, 100]);
             setTimeout(() => {
               setHidden(true);
               setTimeout(onComplete, 600);
