@@ -24,12 +24,12 @@ export default function Hero() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] rounded-full bg-accent/10 blur-[100px] sm:blur-[120px] pointer-events-none" />
 
       <div className="relative z-10 flex flex-col items-center text-center gap-4 sm:gap-5">
-        <div className="w-[300px] sm:w-[400px] drop-shadow-[0_0_30px_rgba(179,0,0,0.3)] animate-reveal">
+        <div className="w-[380px] sm:w-[500px] drop-shadow-[0_0_40px_rgba(179,0,0,0.4)] animate-reveal">
           <Image
             src="/WhatsApp.webp"
             alt="MGHSS"
-            width={450}
-            height={450}
+            width={500}
+            height={500}
             className="object-contain w-full h-auto"
             priority
           />
