@@ -55,7 +55,7 @@ export default function Seniors() {
         </p>
       </div>
 
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] max-w-[340px] h-[45vh] max-h-[420px] sm:w-[380px] sm:h-[480px]">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-[380px] h-[50vh] max-h-[460px] sm:w-[420px] sm:h-[520px]">
         {SENIORS.map((senior, index) => (
           <SeniorCard
             key={index}

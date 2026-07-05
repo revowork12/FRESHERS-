@@ -59,7 +59,7 @@ export function useStepScroll({ totalSteps, onComplete }: { totalSteps: number; 
       const rect = section.getBoundingClientRect();
       const scrollingDown = window.scrollY > lastScrollY.current;
       lastScrollY.current = window.scrollY;
-      if (scrollingDown && rect.top >= 0 && rect.top <= 5) {
+      if (scrollingDown && rect.top <= 0 && rect.bottom > 0) {
         isLocked.current = true;
         window.scrollTo({ top: window.scrollY + rect.top });
       }

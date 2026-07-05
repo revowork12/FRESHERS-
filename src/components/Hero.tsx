@@ -28,8 +28,8 @@ export default function Hero() {
           <Image
             src="/WhatsApp.webp"
             alt="MGHSS"
-            width={160}
-            height={160}
+            width={450}
+            height={450}
             className="object-contain w-full h-auto"
             priority
           />

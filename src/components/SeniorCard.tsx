@@ -24,7 +24,7 @@ export default function SeniorCard({ name, position, quote, imageUrl, isActive }
           src={imageUrl}
           alt={name}
           fill
-          sizes="(max-width: 640px) 80vw, 380px"
+          sizes="(max-width: 640px) 85vw, 420px"
           className="object-cover"
           priority
         />
