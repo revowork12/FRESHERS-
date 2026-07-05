@@ -80,12 +80,11 @@ export default function Seniors() {
         </div>
       </div>
 
-      <div className="absolute bottom-2 sm:bottom-4 left-0 right-0 flex justify-center z-20">
-        <div className="animate-scroll-indicator flex flex-col items-center gap-0.5">
-          <span className="text-[8px] sm:text-[9px] tracking-[0.2em] uppercase text-white/25 font-body">scroll</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/25">
-            <path d="M12 5v14" />
-            <path d="m19 12-7 7-7-7" />
+      <div className="absolute bottom-40 sm:bottom-48 left-0 right-0 flex justify-center z-20 pointer-events-none">
+        <div className="animate-scroll-indicator">
+          <svg width="20" height="32" viewBox="0 0 20 32" fill="none" className="text-white/60">
+            <path d="M10 0v26" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <path d="M2 18l8 8 8-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
       </div>
