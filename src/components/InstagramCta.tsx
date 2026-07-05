@@ -15,6 +15,7 @@ export default function InstagramCta() {
             width={200}
             height={200}
             className="object-contain w-auto h-[250px] sm:h-[200px]"
+            priority
           />
         </div>
 
