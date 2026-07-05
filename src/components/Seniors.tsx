@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useRef, useCallback } from "react";
 import { useStepScroll } from "@/lib/useStepScroll";
 import SeniorCard from "./SeniorCard";
 
@@ -32,14 +32,26 @@ const SENIORS = [
 ];
 
 export default function Seniors() {
-  const scrollToNext = useCallback(() => {
-    window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
-  }, []);
+  const swipeStartX = useRef(0);
 
-  const { sectionRef, currentStep } = useStepScroll({
+  const { sectionRef, currentStep, completed, goToPrev, goToNext } = useStepScroll({
     totalSteps: SENIORS.length,
-    onComplete: scrollToNext,
   });
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (!completed) return;
+    swipeStartX.current = e.touches[0].clientX;
+  }, [completed]);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (!completed) return;
+    const deltaX = e.changedTouches[0].clientX - swipeStartX.current;
+    if (deltaX > 50) {
+      goToPrev();
+    } else if (deltaX < -50) {
+      goToNext();
+    }
+  }, [completed, goToPrev, goToNext]);
 
   return (
     <section
@@ -55,7 +67,11 @@ export default function Seniors() {
         </p>
       </div>
 
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-[380px] h-[50vh] max-h-[460px] sm:w-[420px] sm:h-[520px]">
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-[380px] h-[50vh] max-h-[460px] sm:w-[420px] sm:h-[520px]"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {SENIORS.map((senior, index) => (
           <SeniorCard
             key={index}
@@ -65,7 +81,11 @@ export default function Seniors() {
         ))}
       </div>
 
-      <div className="absolute bottom-14 sm:bottom-20 left-0 right-0 flex justify-center z-20">
+      <div
+        className={`absolute bottom-14 sm:bottom-20 left-0 right-0 flex justify-center z-20 transition-opacity duration-500 ${
+          completed ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
         <div className="flex gap-3">
           {SENIORS.map((_, index) => (
             <div
@@ -80,7 +100,11 @@ export default function Seniors() {
         </div>
       </div>
 
-      <div className="absolute bottom-40 sm:bottom-48 left-0 right-0 flex justify-center z-20 pointer-events-none">
+      <div
+        className={`absolute bottom-40 sm:bottom-48 left-0 right-0 flex justify-center z-20 pointer-events-none transition-opacity duration-500 ${
+          completed ? "opacity-0" : "opacity-100"
+        }`}
+      >
         <div className="animate-scroll-indicator">
           <svg width="20" height="32" viewBox="0 0 20 32" fill="none" className="text-white/60">
             <path d="M10 0v26" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />

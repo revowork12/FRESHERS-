@@ -4,8 +4,9 @@ import { useState, useRef, useCallback, useEffect } from "react";
 
 const SCROLL_THRESHOLD = 150;
 
-export function useStepScroll({ totalSteps, onComplete }: { totalSteps: number; onComplete: () => void }) {
+export function useStepScroll({ totalSteps, onComplete }: { totalSteps: number; onComplete?: () => void }) {
   const [currentStep, setCurrentStep] = useState(0);
+  const [completed, setCompleted] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const consumed = useRef(false);
   const isLocked = useRef(false);
@@ -37,7 +38,20 @@ export function useStepScroll({ totalSteps, onComplete }: { totalSteps: number; 
     [totalSteps]
   );
 
+  const goToPrev = useCallback(() => {
+    if (completed && currentStep > 0) {
+      goToStep(currentStep - 1);
+    }
+  }, [completed, currentStep, goToStep]);
+
+  const goToNext = useCallback(() => {
+    if (completed && currentStep < totalSteps - 1) {
+      goToStep(currentStep + 1);
+    }
+  }, [completed, currentStep, totalSteps, goToStep]);
+
   const actDown = useCallback(() => {
+    if (completed) return;
     if (currentStep < totalSteps - 1) {
       goToStep(currentStep + 1);
     } else if (!pendingRelease.current) {
@@ -45,17 +59,19 @@ export function useStepScroll({ totalSteps, onComplete }: { totalSteps: number; 
     } else {
       consumed.current = true;
       isLocked.current = false;
+      setCompleted(true);
       unlockBody();
-      onComplete();
+      onComplete?.();
     }
-  }, [currentStep, totalSteps, goToStep, onComplete]);
+  }, [currentStep, totalSteps, goToStep, onComplete, completed]);
 
   const actUp = useCallback(() => {
+    if (completed) return;
     if (currentStep > 0) {
       pendingRelease.current = false;
       goToStep(currentStep - 1);
     }
-  }, [currentStep, goToStep]);
+  }, [currentStep, goToStep, completed]);
 
   function tryLock(down: boolean) {
     if (consumed.current || isLocked.current || !down) return false;
@@ -149,5 +165,5 @@ export function useStepScroll({ totalSteps, onComplete }: { totalSteps: number; 
     };
   }, []);
 
-  return { sectionRef, currentStep };
+  return { sectionRef, currentStep, completed, goToPrev, goToNext };
 }
