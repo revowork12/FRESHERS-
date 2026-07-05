@@ -1,12 +1,26 @@
 "use client";
 
+import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Countdown from "./Countdown";
 import ScrollIndicator from "./ScrollIndicator";
 
 export default function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [sectionVisible, setSectionVisible] = useState(true);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setSectionVisible(entry.isIntersecting)
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 max-w-full overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-screen flex flex-col items-center justify-center px-6 max-w-full overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] rounded-full bg-accent/10 blur-[100px] sm:blur-[120px] pointer-events-none" />
 
       <div className="relative z-10 flex flex-col items-center text-center gap-4 sm:gap-5">
@@ -33,10 +47,11 @@ export default function Hero() {
         </div>
 
         <div
-          className="animate-reveal mt-2 sm:mt-4 max-w-full overflow-x-hidden"
+          className="relative animate-reveal mt-2 sm:mt-4 max-w-full overflow-x-hidden"
           style={{ animationDelay: "0.3s" }}
         >
-          <Countdown />
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-accent/8 via-accent/4 to-accent/8 blur-[50px]" />
+          <Countdown sectionVisible={sectionVisible} />
         </div>
       </div>
 

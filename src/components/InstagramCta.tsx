@@ -1,11 +1,23 @@
 "use client";
 
+import Image from "next/image";
+
 export default function InstagramCta() {
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center px-6 text-center relative">
+    <section className="min-h-screen flex flex-col items-center justify-start px-6 text-center relative overflow-x-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[500px] h-[200px] sm:h-[300px] bg-accent/5 blur-[100px] sm:blur-[150px] pointer-events-none" />
 
-      <div className="relative z-10 space-y-8 sm:space-y-10">
+      <div className="relative z-10 w-full pt-[8vh] sm:pt-[10vh] flex flex-col items-center justify-center space-y-8 sm:space-y-10">
+        <div className="rotate-[-5deg] drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)]">
+          <Image
+            src="/ChatGPT sticker-Picsart-BackgroundRemover.webp"
+            alt=""
+            width={200}
+            height={200}
+            className="object-contain w-auto h-[250px] sm:h-[200px]"
+          />
+        </div>
+
         <div className="space-y-3">
           <p className="font-heading text-5xl sm:text-6xl md:text-7xl tracking-wider text-text animate-pulse-glow leading-none">
             See You on <span className="font-serif-numbers italic">6</span> July

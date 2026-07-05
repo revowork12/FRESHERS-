@@ -81,6 +81,11 @@ body {
   100% { transform: scale(1); }
 }
 
+@keyframes glass-pulse {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
@@ -100,6 +105,10 @@ body {
 
 .animate-countdown-tick {
   animation: countdown-tick 0.3s ease-out;
+}
+
+.animate-glass-pulse {
+  animation: glass-pulse 4s ease-in-out infinite;
 }
 
 .typewriter-line {
